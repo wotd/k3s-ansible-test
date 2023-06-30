@@ -3,4 +3,6 @@
   connection: local
   become: true
   roles:
+    - role: k3s/prereq
+    - role: k3s/download
     - role: k3s/master
