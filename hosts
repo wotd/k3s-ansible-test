@@ -1,0 +1,12 @@
+# Install k3s master node
+[master]
+127.0.0.1
+
+# (Optional) Add Compute node to k3s cluster
+[node]
+# 192.16.1.[113:115]
+
+# Don't change
+[k3s_cluster:children]
+master
+node

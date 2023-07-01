@@ -20,7 +20,7 @@ else
 fi
 
 executeAnsiblePlaybook() {
-    ansible-pull -U $REPO_URL "${@}"
+    ansible-pull -U $REPO_URL -i hosts "${@}"
 }
 
 executeAnsiblePlaybook k3s-master.yaml
