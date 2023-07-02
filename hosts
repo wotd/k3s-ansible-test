@@ -1,6 +1,13 @@
+[fcv_single_node]
+127.0.0.1
+
+# Install Azure CLI
+[azcli]
+fcv_single_node
+
 # Install k3s master node
 [master]
-127.0.0.1
+fcv_single_node
 
 # (Optional) Add Compute node to k3s cluster
 [node]
