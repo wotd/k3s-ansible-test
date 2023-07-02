@@ -1,0 +1,82 @@
+---
+# - name: Print all available facts
+#   ansible.builtin.debug:
+#     var: ansible_facts
+
+- name: Install Flux
+  become: true
+  ansible.builtin.shell: |
+    curl -s https://fluxcd.io/install.sh | sudo bash
+  # when: ansible_os_family == "Debian"
+
+- name: Check if the Kustomize is installed
+  stat:
+    path: /usr/bin/kustomize
+    get_attributes: False
+    get_checksum: False
+  register: kustomize_downloaded
+  when: ansible_system == 'Linux'
+
+- name: Install Kustomize
+  become: true
+  ansible.builtin.shell: |
+    curl -s "https://raw.githubusercontent.com/kubernetes-sigs/kustomize/master/hack/install_kustomize.sh"  | bash -s 4.5.7 /usr/bin
+  ignore_errors: yes
+  when: kustomize_downloaded.stat.exists == false
+
+- name: Ensure .ssh directory exists.
+  file: 
+    dest: "{{ dest_key | dirname }}"
+    mode: 0700 
+    owner: "{{ ansible_user }}"
+    state: directory
+# - name: Install ssh key
+#   copy: 
+#     src: "{{ source_key }}" 
+#     dest: "{{ dest_key }}"
+#     mode: 0600
+#     owner: "{{ ansible_user }}"
+
+# - name: Enable gitops
+#   block:
+#     - name: Ensure {{ manifest_path }} directory exists.
+#       file: path={{manifest_path}} state=directory
+#     - name: Install SealedSecret Key
+#       copy: 
+#         src: "{{ sealed_secret_key }}" 
+#         dest: "{{ manifest_path }}/secret.yaml"
+#         mode: 0600
+#         owner: "{{ ansible_user }}"
+#     - name: apply manifest
+#       become: true
+#       ansible.builtin.shell: |
+#         kubectl apply -f {{ manifest_path }}/secret.yaml
+#         rm {{ manifest_path }}/secret.yaml
+#     - name: Copy flux config manifests
+#       copy: 
+#         src: "{{ item }}" 
+#         dest: "{{ manifest_path }}/"
+#         mode: 0600
+#         owner: "{{ ansible_user }}"
+#       with_fileglob:
+#       - "*.yaml"
+#     - name: "Template a gotk-sync.yaml.j2 file"
+#       ansible.builtin.template:
+#         src: gotk-sync.yaml.j2
+#         dest: "{{ manifest_path }}/gotk-sync.yaml"
+#     - name: apply flux manifest
+#       become: true
+#       ansible.builtin.shell: |
+#         kubectl apply -f {{ manifest_path }}/gotk-components.yaml
+#     - name: Install flux repo key
+#       copy: 
+#         src: "{{ flux_secret }}" 
+#         dest: "{{ manifest_path }}/flux_secret.yaml"
+#         mode: 0600
+#         owner: "{{ ansible_user }}"
+#     - name: apply manifest
+#       become: true
+#       ansible.builtin.shell: |
+#         kubectl apply -f {{ manifest_path }}/flux_secret.yaml 
+#         rm {{ manifest_path }}/flux_secret.yaml
+#         kubectl apply -f {{ manifest_path }}/gotk-sync.yaml
