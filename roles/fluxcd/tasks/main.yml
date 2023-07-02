@@ -3,11 +3,26 @@
 #   ansible.builtin.debug:
 #     var: ansible_facts
 
+- name: Check if the FluxCD is installed
+  stat:
+    path: /usr/local/bin/flux
+    get_attributes: False
+    get_checksum: False
+  register: flux_installed
+  when: ansible_system == 'Linux'
+
+- name: Download FluxCD install script
+  ansible.builtin.get_url:
+    url: https://fluxcd.io/install.sh
+    dest: /tmp/fluxcd_install.sh
+    mode: '0740'
+  when: flux_installed.stat.exists == false
+
 - name: Install Flux
   become: true
   ansible.builtin.shell: |
-    curl -s https://fluxcd.io/install.sh | sudo bash
-  # when: ansible_os_family == "Debian"
+    sudo /tmp/fluxcd_install.sh
+  when: flux_installed.stat.exists == false
 
 - name: Check if the Kustomize is installed
   stat:
@@ -24,12 +39,12 @@
   ignore_errors: yes
   when: kustomize_downloaded.stat.exists == false
 
-- name: Ensure .ssh directory exists.
-  file: 
-    dest: "{{ dest_key | dirname }}"
-    mode: 0700 
-    owner: "{{ ansible_user }}"
-    state: directory
+# - name: Ensure .ssh directory exists.
+#   file: 
+#     dest: "{{ dest_key | dirname }}"
+#     mode: 0700 
+#     owner: "{{ ansible_user }}"
+#     state: directory
 # - name: Install ssh key
 #   copy: 
 #     src: "{{ source_key }}" 
