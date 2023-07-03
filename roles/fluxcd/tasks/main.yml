@@ -40,7 +40,7 @@
 
 - name: Install Kustomize
   become: true
-  ansible.builtin.shell: |
+  shell: |
     curl -s "https://raw.githubusercontent.com/kubernetes-sigs/kustomize/master/hack/install_kustomize.sh"  | bash -s 4.5.7 /usr/bin
   ignore_errors: yes
   when: kustomize_downloaded.stat.exists == false
