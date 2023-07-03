@@ -28,7 +28,7 @@
   become: true
   shell: |
     /tmp/fluxcd_install.sh
-  when: flux_installed.stat.exists == false"
+  when: flux_installed.stat.exists == false
 
 - name: Check if the Kustomize is installed
   stat:
