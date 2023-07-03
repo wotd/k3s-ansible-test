@@ -12,6 +12,10 @@ runAsRoot() {
   fi
 }
 
+executeAnsiblePlaybook() {
+    ansible-pull -U $REPO_URL -i hosts "${@}"
+}
+
 if ! $HAS_ANSIBLE; then
     runAsRoot apt update
     runAsRoot apt install ansible
@@ -19,8 +23,5 @@ else
     echo "Ansible installed"
 fi
 
-executeAnsiblePlaybook() {
-    ansible-pull -U $REPO_URL -i hosts "${@}"
-}
 
 executeAnsiblePlaybook k3s-master.yaml

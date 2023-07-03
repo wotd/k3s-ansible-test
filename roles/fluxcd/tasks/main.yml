@@ -21,7 +21,7 @@
 - name: Install Flux
   become: true
   ansible.builtin.shell: |
-    sudo /tmp/fluxcd_install.sh
+    bash /tmp/fluxcd_install.sh
   when: flux_installed.stat.exists == false
 
 - name: Check if the Kustomize is installed
