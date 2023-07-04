@@ -1,6 +1,6 @@
 ---
 - name: Set SELinux to disabled state
-  selinux:
+  ansible.posix.selinux:
     state: disabled
   when: ansible_distribution in ['CentOS', 'Red Hat Enterprise Linux']
 
