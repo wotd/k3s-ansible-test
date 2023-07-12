@@ -9,7 +9,7 @@ extra_server_args: ""
 extra_agent_args: ""
 
 # gitops vars
-source_key: group_vars/all/repo-key
+source_key: group_vars/vault-files/repo-key
 flux_secret: inventories/totalvrm/group_vars/gitops/flux_secret.yaml
 manifest_path: /home/{{ ansible_user }}/manifests
 dest_key: "/home/{{ ansible_user }}/.ssh/fluxcd_prv"
