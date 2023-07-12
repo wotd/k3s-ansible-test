@@ -1,3 +1,3 @@
 - name: Print the variable
   ansible.builtin.debug:
-    msg: "Test variable {{k3s_version}} ?"
+    msg: "Test variable {{ vault_gitops_repository }} ?"
