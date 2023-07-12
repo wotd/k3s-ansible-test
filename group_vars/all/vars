@@ -14,6 +14,7 @@ flux_secret: inventories/totalvrm/group_vars/gitops/flux_secret.yaml
 manifest_path: /home/{{ ansible_user }}/manifests
 dest_key: "/home/{{ ansible_user }}/.ssh/fluxcd_prv"
 gitops_repository: "{{ vault_gitops_repository }}"
+gitops_branch: main
 gitops_manifests_root_path: "./gitops/fcv-vm"
 
 # Azure Arc vars

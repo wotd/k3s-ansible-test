@@ -58,8 +58,16 @@
     mode: 0600
     owner: "{{ ansible_user }}"
 
-# - name: Enable gitops
-#   block:
+- name: Enable gitops
+  block:
+    - name: Bootstrap FluxCD
+      become: true
+      shell: |
+        flux bootstrap git \
+        --url={{ gitops_repository }} \
+        --branch={{ gitops_branch }} \
+        --path={{ gitops_manifests_root_path }} \
+        --private-key-file={{ dest_key }}
 #     - name: Ensure {{ manifest_path }} directory exists.
 #       file: path={{manifest_path}} state=directory
 #     - name: Install SealedSecret Key
