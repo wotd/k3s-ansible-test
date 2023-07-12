@@ -1,5 +1,4 @@
 #!/usr/bin/env bash
-# Simple repo for ansible pull
 
 HAS_ANSIBLE="$(type "ansible" &> /dev/null && echo true || echo false)"
 REPO_URL="https://github.com/wotd/k3s-ansible-test.git"
