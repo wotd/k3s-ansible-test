@@ -1,1 +1,26 @@
-test_variable: "{{ vault_test_variable }}"
+# k3s_cluster vars
+k3s_version: v1.22.3+k3s1
+
+# master vars
+ansible_user: "{{ lookup('env', 'USER') }}"
+systemd_dir: /etc/systemd/system
+master_ip: "{{ hostvars[groups['master'][0]]['ansible_host'] | default(groups['master'][0]) }}"
+extra_server_args: ""
+extra_agent_args: ""
+
+# gitops vars
+source_key: group_vars/all/repo-key
+flux_secret: inventories/totalvrm/group_vars/gitops/flux_secret.yaml
+manifest_path: /home/{{ ansible_user }}/manifests
+dest_key: "/home/{{ ansible_user }}/.ssh/fluxcd_prv"
+gitops_repository: "{{ vault_gitops_repository }}"
+gitops_manifests_root_path: "./gitops/fcv-vm"
+
+# Azure Arc vars
+azure:
+  service_principal_id: "{{ vault_service_principal_id }}"
+  service_principal_secret: "{{ vault_service_principal_secret }}"
+  resource_group: "{{ vault_resource_group }}"
+  tenant_id: "{{ vault_tenant_id }}"
+  subscription_id: "{{ vault_subscription_id }}"
+  location: 'WestEurope'

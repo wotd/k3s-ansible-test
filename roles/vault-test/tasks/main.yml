@@ -1,3 +1,3 @@
 - name: Print the variable
   ansible.builtin.debug:
-    msg: Test variable {{vault_test_variable}} or {{test_variable}} ?
+    msg: Test variable {{vault_gitops_repository}} ?

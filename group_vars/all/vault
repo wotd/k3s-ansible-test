@@ -1,0 +1,6 @@
+vault_gitops_repository: "ssh://git@gitlab.com:fj-vision-intelligence/integration/{{ project_name }}.git"
+# vault_service_principal_id:
+# vault_service_principal_secret
+# vault_resource_group
+# vault_tenant_id
+# vault_subscription_id
