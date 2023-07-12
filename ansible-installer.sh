@@ -26,7 +26,7 @@ runAsRoot() {
 }
 
 executeAnsiblePlaybook() {
-    ansible-pull -U $REPO_URL --vault-id ${DEPLOY_ENV}@vault-file --vault-password-file ${VAULT_PASS_FILE} -i hosts "${@}" 
+    ansible-pull -U $REPO_URL --vault-id ${DEPLOY_ENV}@${VAULT_PASS_FILE} vault-file -i hosts "${@}" 
 }
 
 if ! $HAS_ANSIBLE; then
