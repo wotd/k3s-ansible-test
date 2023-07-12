@@ -1,1 +1,1 @@
-test_variable: {{ vault_test_variable }}
+test_variable: "{{ vault_test_variable }}"
