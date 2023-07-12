@@ -2,6 +2,19 @@
 
 HAS_ANSIBLE="$(type "ansible" &> /dev/null && echo true || echo false)"
 REPO_URL="https://github.com/wotd/k3s-ansible-test.git"
+VAULT_PASS_FILE=/etc/vault_pass
+
+
+
+if [[ -z "${DEPLOY_ENV}" ]]; then
+  echo "DEPLOY_ENV is not set. Aborting!"
+  exit 1
+fi
+
+if [ ! -f "$VAULT_PASS_FILE" ]; then
+    echo "$VAULT_PASS_FILE does not exist. Aborting!"
+    exit 1
+fi
 
 # runs the given command as root (detects if we are root already)
 runAsRoot() {
@@ -13,7 +26,7 @@ runAsRoot() {
 }
 
 executeAnsiblePlaybook() {
-    ansible-pull -U $REPO_URL -i hosts "${@}"
+    ansible-pull -U $REPO_URL --vault-id ${DEPLOY_ENV}@vault-file --vault-password-file ${VAULT_PASS_FILE} -i hosts "${@}" 
 }
 
 if ! $HAS_ANSIBLE; then
@@ -22,6 +35,5 @@ if ! $HAS_ANSIBLE; then
 else
     echo "Ansible installed"
 fi
-
 
 executeAnsiblePlaybook k3s-master.yaml
