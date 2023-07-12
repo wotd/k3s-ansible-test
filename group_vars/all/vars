@@ -24,3 +24,5 @@ gitops_manifests_root_path: "./gitops/fcv-vm"
 #   tenant_id: "{{ vault_tenant_id }}"
 #   subscription_id: "{{ vault_subscription_id }}"
 #   location: 'WestEurope'
+
+project_name: ""
