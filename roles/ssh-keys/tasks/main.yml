@@ -1,0 +1,20 @@
+---
+- name: Git checkout
+  ansible.builtin.git:
+    repo: "{{ public_keys_git_repo }}"
+    dest: /tmp/pub-keys-checkout
+    version: main
+    key_file: "/home/{{ lookup('env', 'USER') }}/.ssh/fluxcd_prv"
+    accept_hostkey: yes
+
+- name: "Read yaml file"
+  include_vars:
+    file: '/tmp/pub-keys-checkout/keys.yaml'
+
+- name: 'Set authorized key took from file'
+  authorized_key:
+    user: "{{ default_user }}"
+    state: present
+    key: "{{ item.key }}"
+    comment: "{{ item.name }}"
+  loop: "{{ public_keys }}"
