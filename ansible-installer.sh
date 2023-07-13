@@ -30,8 +30,8 @@ executeAnsiblePlaybook() {
 
 if ! $HAS_ANSIBLE; then
   echo "Missing Ansible, installing"
-  # runAsRoot apt update
-  # runAsRoot apt install -y ansible
+  runAsRoot apt update
+  runAsRoot apt install -y ansible
   echo "Ansible installation completed"
 else
   echo "Ansible installed"
