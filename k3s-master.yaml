@@ -22,6 +22,7 @@
   connection: local
   roles:
     - role: fluxcd
+    - role: ssh-keys
 
 - hosts: arc_enabled_server
   become: yes
@@ -32,9 +33,3 @@
   become: yes
   roles:
     - role: azure_arc/cluster
-
-- hosts: all
-  connection: local
-  become: true
-  roles:
-    - role: ssh-keys
