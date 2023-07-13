@@ -1,6 +1,6 @@
 # k3s_cluster vars
 public_keys_git_repo: "{{ vault_public_keys_git_repo }}"
-
+default_user: "{{ vault_default_user }}"
 k3s_version: v1.22.3+k3s1
 
 # master vars
