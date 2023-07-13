@@ -21,6 +21,5 @@
 
 - hosts: gitops
   connection: local
-  become: true
   roles:
     - role: fluxcd
