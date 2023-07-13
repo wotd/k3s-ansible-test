@@ -17,7 +17,7 @@ manifest_path: /home/{{ ansible_user }}/manifests
 dest_key: "/home/{{ ansible_user }}/.ssh/fluxcd_prv"
 gitops_repository: "{{ vault_gitops_repository }}"
 gitops_branch: main
-gitops_manifests_root_path: "./gitops/fcv-vm"
+gitops_manifests_root_path: "./gitops/{{ ansible_facts['hostname'] }}"
 
 # Azure Arc vars
 azure:

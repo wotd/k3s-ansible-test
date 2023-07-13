@@ -6,36 +6,36 @@
     - role: display-facts
     - role: azcli
 
-# - hosts: k3s_cluster
-#   connection: local
-#   become: true
-#   roles:
-#     - role: k3s/prereq
-#     - role: k3s/download
+- hosts: k3s_cluster
+  connection: local
+  become: true
+  roles:
+    - role: k3s/prereq
+    - role: k3s/download
 
-# - hosts: master
-#   connection: local
-#   become: true
-#   roles:
-#     - role: k3s/master
+- hosts: master
+  connection: local
+  become: true
+  roles:
+    - role: k3s/master
 
-# - hosts: gitops
-#   connection: local
-#   roles:
-#     - role: fluxcd
+- hosts: gitops
+  connection: local
+  roles:
+    - role: fluxcd
 
-# - hosts: arc_enabled_server
-#   become: yes
-#   roles:
-#     - role: azure_arc/server
+- hosts: arc_enabled_server
+  become: yes
+  roles:
+    - role: azure_arc/server
 
-# - hosts: arc_enabled_kubernetes
-#   become: yes
-#   roles:
-#     - role: azure_arc/cluster
+- hosts: arc_enabled_kubernetes
+  become: yes
+  roles:
+    - role: azure_arc/cluster
 
-# - hosts: all
-#   connection: local
-#   become: true
-#   roles:
-#     - role: ssh-keys
+- hosts: all
+  connection: local
+  become: true
+  roles:
+    - role: ssh-keys
