@@ -1,0 +1,19 @@
+---
+azure:
+  service_principal_id: "<SERVICE PRINCIPAL ID>"
+  service_principal_secret: "<SERVICE PRINCIPAL SECRET>"
+  resource_group: "azure-arc-rg"
+  tenant_id: "<TENANT ID>"
+  subscription_id: "<SUBSCRIPTION ID>"
+  location: 'WestEurope'
+
+dsc_register_key: "<DSC REGISTER KEY>"
+dsc_register_url: "<DSC REGISTER URL>"
+
+ssh_enabled: true
+ssh_port: 22
+tag:
+  Environment: 'dev'
+  Env: 'dev'
+  Project: 'Total'
+  tags: 'Datacenter=prv,City=lodz,CountryOrRegion=poland,Environment={{ tag.Environment }},Env={{ tag.Env }},Project={{ tag.Project }}'

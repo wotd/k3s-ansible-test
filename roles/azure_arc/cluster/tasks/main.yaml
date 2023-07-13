@@ -1,0 +1,92 @@
+---
+- name: Check if the Kubernetes server is installed
+  stat:
+    path: "{{ kubeconfig_path }}"
+    get_attributes: False
+    get_checksum: False
+  register: kubeconfig_path_present
+  when: ansible_system == 'Linux'
+
+- name: Install azcli extension & Helm
+  ansible.builtin.shell: |
+    az extension add --name connectedk8s
+    curl 'https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3' | bash
+
+- name: Connect to Azure
+  ansible.builtin.shell: |
+    az login --service-principal -u "{{ azure.service_principal_id }}" -p "{{ azure.service_principal_secret }}"  --tenant "{{ azure.tenant_id }}"
+  when: (ansible_system == 'Linux') and (kubeconfig_path_present.stat.exists == true)   
+
+- name: Check Microsoft.Kubernetes registration
+  ansible.builtin.shell: |
+    az provider show -n Microsoft.Kubernetes
+  register: microsoft_kubernetes_status
+
+- name: Check Microsoft.KubernetesConfiguration registration
+  ansible.builtin.shell: |
+    az provider show -n Microsoft.KubernetesConfiguration
+  register: microsoft_kubernetesconfiguration_status
+
+- name: Check Microsoft.ExtendedLocation registration
+  ansible.builtin.shell: |
+    az provider show -n Microsoft.ExtendedLocation 
+  register: microsoft_extendedlocation_status
+
+- name: Register Microsoft.Kubernetes
+  ansible.builtin.shell: |
+    az provider register --namespace Microsoft.Kubernetes
+  when: (microsoft_kubernetes_status.stdout | from_json).registrationState == "NotRegistered"
+
+- name: Register Microsoft.KubernetesConfiguration
+  ansible.builtin.shell: |
+    az provider register --namespace Microsoft.KubernetesConfiguration
+  when: (microsoft_kubernetesconfiguration_status.stdout | from_json).registrationState == "NotRegistered" 
+
+- name: Register Microsoft.ExtendedLocation
+  ansible.builtin.shell: |
+    az provider register --namespace Microsoft.ExtendedLocation
+  when: (microsoft_extendedlocation_status.stdout | from_json).registrationState == "NotRegistered"
+
+- name: Wait until Microsoft.Kubernetes is registered
+  ansible.builtin.shell: |
+    az provider show -n Microsoft.Kubernetes
+  register: registrationState_status
+  until: (registrationState_status.stdout | from_json).registrationState == "Registered"
+  retries: 10
+  delay: 1
+
+- name: Wait until Microsoft.KubernetesConfiguration is registered
+  ansible.builtin.shell: |
+    az provider show -n Microsoft.KubernetesConfiguration
+  register: registrationState_status
+  until: (registrationState_status.stdout | from_json).registrationState == "Registered"
+  retries: 10
+  delay: 1
+
+- name: Wait until Microsoft.ExtendedLocation is registered
+  ansible.builtin.shell: |
+    az provider show -n Microsoft.ExtendedLocation
+  register: registrationState_status
+  until: (registrationState_status.stdout | from_json).registrationState == "Registered"
+  retries: 10
+  delay: 1
+
+- name: Check if cluster is already connected to Azure Arc
+  register: cluster_registered
+  ansible.builtin.shell: |
+    az connectedk8s show --name {{ ansible_hostname }} --resource-group {{ azure.resource_group }}
+  when: (ansible_system == 'Linux') and (kubeconfig_path_present.stat.exists == true)   
+  failed_when: (cluster_registered.rc not in [ 0, 16 ])
+  ignore_errors: yes
+  changed_when: False
+
+- name: debug stdout
+  debug:
+    # msg: "{{ cluster_registered.stdout }}"
+    msg: "{{ (cluster_registered.stdout | from_json).connectivityStatus }}"
+  when: cluster_registered.rc in [ 0, 16 ]
+
+- name: Connect cluster to Azure Arc
+  ansible.builtin.shell: |
+    az connectedk8s connect --kube-config {{ kubeconfig_path }} --name {{ ansible_hostname }} --resource-group {{ azure.resource_group }}
+  when: (ansible_system == 'Linux') and ((cluster_registered.rc not in [ 0, 16 ]) or ((cluster_registered.stdout | from_json).connectivityStatus != "Connected"))

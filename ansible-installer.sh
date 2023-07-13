@@ -28,10 +28,13 @@ executeAnsiblePlaybook() {
 }
 
 if ! $HAS_ANSIBLE; then
-    runAsRoot apt update
-    runAsRoot apt install ansible
+  echo "Missing Ansible, installing"
+  runAsRoot apt update
+  runAsRoot apt install ansible
+  echo "Ansible installation complited"
 else
-    echo "Ansible installed"
+  echo "Ansible installed"
 fi
 
+echo "Ansible Playbook execution..."
 executeAnsiblePlaybook k3s-master.yaml

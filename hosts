@@ -20,3 +20,10 @@ node
 
 [gitops:children]
 fcv_single_node
+
+# Deploy Azure Arc
+[arc_enabled_server:children]
+fcv_single_node
+
+[arc_enabled_kubernetes:children]
+fcv_single_node
