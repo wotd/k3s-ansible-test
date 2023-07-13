@@ -23,3 +23,13 @@
   connection: local
   roles:
     - role: fluxcd
+
+- hosts: arc_enabled_server
+  become: yes
+  roles:
+    - role: azure_arc/server
+
+- hosts: arc_enabled_kubernetes
+  become: yes
+  roles:
+    - role: azure_arc/cluster
