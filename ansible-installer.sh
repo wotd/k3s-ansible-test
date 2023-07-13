@@ -31,7 +31,7 @@ if ! $HAS_ANSIBLE; then
   echo "Missing Ansible, installing"
   runAsRoot apt update
   runAsRoot apt install ansible
-  echo "Ansible installation complited"
+  echo "Ansible installation completed"
 else
   echo "Ansible installed"
 fi
