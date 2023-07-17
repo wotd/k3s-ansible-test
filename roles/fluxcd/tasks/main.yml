@@ -12,7 +12,7 @@
   when: ansible_system == 'Linux'
 
 - name: Download FluxCD install script
-  ansible.builtin.get_url:
+  get_url:
     url: https://fluxcd.io/install.sh
     dest: /tmp/fluxcd_install.sh
     mode: '0740'
@@ -20,7 +20,7 @@
 
 # - name: Install Flux
 #   become: true
-#   ansible.builtin.shell: |
+#   shell: |
 #     bash /tmp/fluxcd_install.sh
 #   when: flux_installed.stat.exists == false
 
@@ -78,7 +78,7 @@
 #         owner: "{{ ansible_user }}"
 #     - name: apply manifest
 #       become: true
-#       ansible.builtin.shell: |
+#       shell: |
 #         kubectl apply -f {{ manifest_path }}/secret.yaml
 #         rm {{ manifest_path }}/secret.yaml
 #     - name: Copy flux config manifests

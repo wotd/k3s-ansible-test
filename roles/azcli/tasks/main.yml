@@ -4,7 +4,7 @@
 #     msg: "{{ ansible_os_family }}"
 
 - name: Install az cli prereq for Debian
-  ansible.builtin.package:
+  package:
     name:
       - ca-certificates 
       - curl 
@@ -15,7 +15,7 @@
   when: ansible_os_family == "Debian"
 
 # - name: Install keys on Debian
-#   ansible.builtin.apt_key:
+#   apt_key:
 #     url: https://packages.microsoft.com/keys/microsoft.asc
 #     state: present
 
@@ -28,7 +28,7 @@
   when: ansible_os_family == "Debian"
 
 - name: Install az cli for Debian
-  ansible.builtin.apt:
+  apt:
     name:
       - azure-cli
     state: present
