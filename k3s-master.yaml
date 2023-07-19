@@ -34,15 +34,8 @@
   roles:
     - role: azure_arc/cluster
 
-# - hosts: all
-#   connection: local
-#   become: true
-#   roles:
-#     - role: ssh-keys
-
-- hosts: gpu
+- hosts: all
   connection: local
   become: true
   roles:
-    - role: nv_prereq
-    - role: nv_install
+    - role: ssh-keys
