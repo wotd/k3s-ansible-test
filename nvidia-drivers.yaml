@@ -1,0 +1,6 @@
+- hosts: gpu
+  connection: local
+  become: true
+  roles:
+    - role: nv_prereq
+    - role: nv_install
