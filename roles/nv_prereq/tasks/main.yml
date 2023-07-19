@@ -1,0 +1,147 @@
+---
+# - name: Print all available facts
+#   debug:
+#     var: ansible_facts
+
+- name: Add containerd key
+  become: yes
+  apt_key:
+    url: https://download.docker.com/linux/ubuntu/gpg
+
+- name: Add containerd repo
+  become: yes
+  apt_repository:
+    repo: "deb [arch=amd64] https://download.docker.com/linux/ubuntu {{ ansible_distribution_release }} stable"
+    state: present
+
+- name: Add nvidia key
+  become: yes
+  apt_key:
+    url: https://nvidia.github.io/libnvidia-container/gpgkey
+
+- name: Add nvidia repo
+  become: yes
+  get_url:
+    url: "https://nvidia.github.io/libnvidia-container/ubuntu{{ ansible_facts['lsb']['release'] }}/libnvidia-container.list"
+    dest: "/etc/apt/sources.list.d/nvidia-container-toolkit.list"
+    mode: '644'
+  when: (ansible_system == 'Linux')
+
+- name: Install a .deb DCGM repository
+  become: yes
+  apt:
+    deb: https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2004/x86_64/cuda-keyring_1.0-1_all.deb
+  when: ansible_os_family == "Debian"
+
+- name: Install DCGM repo
+  become: yes
+  shell: add-apt-repository "deb https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2004/x86_64/ /"
+  when: ansible_os_family == "Debian"
+
+- name: Install NVidia prereq for Debian
+  become: yes
+  package:
+    name:
+      - build-essential 
+      - cmake 
+      - unzip 
+      - pkg-config
+      - libxmu-dev 
+      - libxi-dev 
+      - libglu1-mesa 
+      - libglu1-mesa-dev
+      - libjpeg-dev 
+      - libpng-dev 
+      - libtiff-dev
+      - libavcodec-dev 
+      - libavformat-dev 
+      - libswscale-dev 
+      - libv4l-dev
+      - libxvidcore-dev 
+      - libx264-dev
+      - libgtk-3-dev
+      - libopenblas-dev 
+      - libatlas-base-dev 
+      - liblapack-dev 
+      - gfortran
+      - libhdf5-serial-dev 
+      - graphviz
+      - python3-dev 
+      - python3-tk 
+      - python-imaging-tk
+      - linux-image-generic 
+      - linux-image-extra-virtual
+      - linux-source 
+      - linux-headers-generic
+      - datacenter-gpu-manager
+      - nvidia-container-toolkit
+    state: present
+    update_cache: yes
+  when: ansible_os_family == "Debian"
+
+# - name: Enable and check nvidia-dcgm service
+#   systemd:
+#     name: nvidia-dcgm
+#     daemon_reload: yes
+#     state: restarted
+#     enabled: yes
+
+# - name: Create a /etc/containerd directory if it does not exist
+#   become: yes
+#   file:
+#     path: /etc/containerd
+#     state: directory
+#     mode: '0755'
+
+# - name: Copy containerd config.toml file
+#   become: yes
+#   copy:
+#     src: config.toml
+#     dest: /etc/containerd/config.toml
+#     mode: '0644'
+#   register: config_toml_file
+
+# - name: Restart service containerd if config was changed
+#   become: yes
+#   service:
+#     name: containerd
+#     state: restarted
+#   when: config_toml_file.changed
+
+# - name: Install Nvidia repository GPG keys
+#   become: yes
+#   shell: add-apt-repository ppa:graphics-drivers/ppa
+#   when: ansible_os_family == "Debian"
+
+  # become: yes
+  # apt_repository:
+  #   repo: 'ppa:graphics-drivers/ppa'
+  # when: ansible_os_family == "Debian"
+
+- name: Purging NVidia drivers
+  become: yes
+  package:
+    name:
+      - nvidia*
+    state: absent
+    purge: yes
+  when: (ansible_os_family == "Debian") and (purge_drivers == true)
+
+# - name: Check if the CUDA drivers has already been downloaded on server
+#   # become: yes
+#   stat:
+#     path: "{{ nv_cuda_download_file }}"
+#     get_attributes: False
+#     get_checksum: False
+#   register: nv_cuda_downloaded
+#   when: ansible_system == 'Linux'
+
+# - name: Download the CUDA drivers
+#   # become: yes
+#   get_url:
+#     url: "{{ nv_cuda_download_url }}"
+#     dest: "{{ nv_cuda_download_file }}"
+#     mode: '700'
+#   when: (ansible_system == 'Linux') and (nv_cuda_downloaded.stat.exists == false) 
+
+

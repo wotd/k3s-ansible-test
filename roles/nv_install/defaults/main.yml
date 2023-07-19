@@ -1,0 +1,4 @@
+---
+# nv_drivers_version: 515
+# nv_cuda_version: 11.2.2_460.32.03
+# nv_cuda_download_file: /tmp/cuda_{{ nv_cuda_version }}_linux.run

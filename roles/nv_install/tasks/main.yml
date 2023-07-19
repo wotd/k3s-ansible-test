@@ -1,0 +1,33 @@
+---
+- name: Install NVidia drivers
+  become: yes
+  apt:
+    name:
+      - nvidia-headless-{{ nv_drivers_version }}-server
+      - nvidia-headless-no-dkms-{{ nv_drivers_version }}-server
+      - nvidia-utils-{{ nv_drivers_version }}
+    state: present
+    # install_recommends: no
+  when: ansible_os_family == "Debian"
+  
+# - name: Install the CUDA drivers
+#   become: yes
+#   shell: bash {{ nv_cuda_download_file }} --silent --toolkit --samples
+#   when: (ansible_system == 'Linux')
+
+# - name: Install cuDNN
+#   become: yes
+#   ansible.builtin.apt:
+#     deb: https://fcvansibleresources.blob.core.windows.net/ansible/{{ nv_cudnn_filename }}
+#   when: (ansible_system == 'Linux')
+
+- name: Update the .bashrc
+  blockinfile:
+    dest: "{{ ansible_env.HOME }}/.bashrc"
+    block: |
+      export PATH=/usr/local/cuda-11.2/bin${PATH:+:${PATH}}
+      export LD_LIBRARY_PATH=/usr/local/cuda-11.2/lib64${LD_LIBRARY_PATH:+:${LD_LIBRARY_PATH}}
+      export CUDA_HOME=/usr/local/cuda
+    marker: '# {mark} ANSIBLE MANAGED BLOCK - NVidia CUDA'
+    # insertafter : EOF
+    create: yes 

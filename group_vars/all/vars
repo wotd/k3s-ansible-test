@@ -27,3 +27,13 @@ azure:
   tenant_id: "{{ vault_tenant_id }}"
   subscription_id: "{{ vault_subscription_id }}"
   location: 'WestEurope'
+
+# Nvidia drivers
+nv_drivers_version: 515
+nv_cuda_version: 11.6.2
+nv_cuda_filename: cuda_{{ nv_cuda_version }}_510.47.03_linux.run
+nv_cuda_download_file: /tmp/{{ nv_cuda_filename }}
+nv_cuda_download_url: https://developer.download.nvidia.com/compute/cuda/{{ nv_cuda_version }}/local_installers/{{ nv_cuda_filename }}
+nv_cudnn_version: 8.5.0
+nv_cudnn_filename: cudnn-local-repo-ubuntu1804-{{ nv_cudnn_version }}.96_1.0-1_amd64.deb
+nv_cudnn_download_file: /tmp/{{ nv_cudnn_filename }}
