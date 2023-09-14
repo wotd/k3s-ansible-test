@@ -4,7 +4,6 @@
   apt:
     name:
       - nvidia-headless-{{ nv_drivers_version }}-server
-      - nvidia-headless-no-dkms-{{ nv_drivers_version }}-server
       - nvidia-utils-{{ nv_drivers_version }}
     state: present
     # install_recommends: no
